@@ -37,7 +37,7 @@
 
 .header .options {
   display: flex;
-  color: white;
+  color: white !important;
 }
 
 .header .option {
@@ -62,4 +62,9 @@
 
 .header .option .option_basket {
   margin-left: 10px;
+}
+
+.header a {
+  color: white;
+  text-decoration: none;
 }
