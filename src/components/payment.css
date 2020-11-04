@@ -1,0 +1,21 @@
+.payment {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment h1 {
+  text-align: center;
+}
+
+.payment > div {
+  margin-bottom: 5px;
+  display: flex;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  padding: 20px;
+  flex: 0.7;
+}
+
+.payment h4 {
+  flex: 0.3;
+}

@@ -9,6 +9,14 @@ import { useStateValue } from "../stateProvider";
 
 const Header = () => {
   const [{ basket, user }, dispatch] = useStateValue();
+
+  const signOut = () => {
+    dispatch({
+      type: "SIGN_OUT",
+      user: null
+    });
+  };
+
   return (
     <div className="header">
       <Link to="/">
@@ -20,9 +28,13 @@ const Header = () => {
       </div>
       <div className="options">
         <div className="option">
-          <div className="option_one">Hello</div>
+          <div className="option_one">Hello {user ? user.email : "Guest"} </div>
           <div className="option_two">
-            {user ? <div>sign out</div> : <Link to="/login">Sign in</Link>}
+            {user ? (
+              <Link onClick={signOut}>sign out</Link>
+            ) : (
+              <Link to="/login">Sign in</Link>
+            )}
           </div>
         </div>
         <div className="option">

@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { auth } from "../firebase";
+import { useStateValue } from "../stateProvider";
 import "./login.css";
 
 const Login = () => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [{}, dispatch] = useStateValue();
   const signIn = (e) => {
     e.preventDefault();
     auth
       .signInWithEmailAndPassword(email, password)
       .then((auth) => {
         if (auth) {
+          dispatch({ type: "SET_USER", user: auth });
           history.push("/");
         }
       })
