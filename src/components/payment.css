@@ -19,3 +19,11 @@
 .payment h4 {
   flex: 0.3;
 }
+
+.payment .method > form {
+  flex: 1;
+}
+.payment .method > form p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
