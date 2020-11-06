@@ -1,14 +1,17 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStateValue } from "../stateProvider";
 import ItemBasket from "./itemBasket";
 import CurrencyFormat from "react-currency-format";
 
 import "./payment.css";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const Payment = () => {
   const [{ basket, user }, dispatch] = useStateValue();
 
+  const history = useHistory();
   const stripe = useStripe();
   const elements = useElements();
 
@@ -16,10 +19,35 @@ const Payment = () => {
   const [disabled, setDisabled] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
+  const [clientSecret, setClientSecret] = useState(false);
 
-  const handleSumbit = (e) => {
-    e.preventefault();
+  useEffect(() => {
+    const getClientSecret = async () => {
+      const response = await axios({
+        method: "post",
+        // i dont-t why 100
+        url: `payments/create?total=${getBasketTotal(basket) * 100}`
+      });
+      setClientSecret(response.data.clientSecret);
+    };
+    getClientSecret();
+  }, [basket]);
+  const handleSumbit = async (e) => {
+    e.preventDefault();
     setProcessing(true);
+
+    const payload = await stripe
+      .confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)
+        }
+      })
+      .then((paymentIntent) => {
+        setSucceeded(true);
+        setError(null);
+        setProcessing(false);
+        history.replace("/orders");
+      });
   };
   const handleChange = (e) => {
     setDisabled(e.empty);
@@ -78,7 +106,7 @@ const Payment = () => {
           />
           <button
             onClick={handleSumbit}
-            disabled={processing || disabled || succeeded}
+            disabled={error || processing || disabled || succeeded}
           >
             {processing ? "Processing" : "Buy now"}
           </button>
